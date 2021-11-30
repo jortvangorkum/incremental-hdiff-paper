@@ -1,4 +1,45 @@
 \documentclass{article}
+%%%%%%%%%%%%
+% PACKAGES %
+%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage{lastpage}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % Clears the default header and footers
+\fancyhead[L]{Incremental Type-Safe Structural Diffing}
+\fancyhead[R]{Page \thepage\ of \pageref{LastPage}}
+
+%%%%%%%%%%%%
+% DOCUMENT %
+%%%%%%%%%%%%
+\title{
+    {Incremental Type-Safe Structural Diffing}
+}
+\author{Jort van Gorkum}
+\date{\today}
+
 \begin{document}
-hello world test 123
+\maketitle
+\thispagestyle{empty} % Removes the first page number at the bottom
+
+\input{sections/introduction.tex}
+
+\newpage
+\input{sections/background.tex}
+
+\newpage
+\input{sections/preliminary_results.tex}
+
+\newpage
+\input{sections/planning.tex}
+
+\newpage
+\input{sections/appendix.tex}
+
+
 \end{document}
