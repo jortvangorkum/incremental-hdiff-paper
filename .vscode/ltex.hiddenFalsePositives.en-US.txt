@@ -1,0 +1,1 @@
+{"rule":"THE_PUNCT","sentence":"^\\QIn this paper we present an efficient datatype-generic algorithm to compute the difference between two elements of any mutually recursive family The diff function computes these differences between two values of type a, and apply attempts to transform one value according to the information stored in the Patch provided to it.\\E$"}

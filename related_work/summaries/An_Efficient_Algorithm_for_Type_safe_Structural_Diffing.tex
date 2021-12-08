@@ -1,0 +1,34 @@
+\chapter{An Efficient Algorithm for Type-Safe Structural Diffing}
+
+\section{Abstract}
+Effectively computing the difference between two versions of a source file has become an indispensable part of software development. The de facto standard tool used by most version control systems is the UNIX diff utility, that compares two files on a line-by-line basis without any regard for the structure of the data stored in these files. This paper presents an alternative datatype generic algorithm for computing the difference between two values of any algebraic datatype. This algorithm maximizes sharing between the source and target trees, while still running in linear time. Finally, this paper demonstrates that by instantiating this algorithm to the Lua abstract syntax tree and mining the commit history of repositories found on GitHub, the resulting patches can often be merged automatically, even when existing technology has failed.
+
+\section{Introduction}
+\begin{itemize}
+    \item A consequence of the by line granularity of the UNIX diff is it inability to identify more fine-grained changes in the objects it compares.
+    \item Ideally, however, the objects under comparison should dictate the granularity of change to be considered. This is precisely the goal of structural differencing tools.
+    \item In this paper we present an efficient datatype-generic algorithm to compute the difference between two elements of any mutually recursive family
+    \item The \textit{diff} function computes these differences between two values of type \textit{a}, 
+    \item and \textit{apply} attempts to transform one value according to the information stored in the
+    \textit{Patch} provided to it.
+    \item We expect certain properties of our diff and apply functions.
+    \begin{itemize}
+        \item The first being \textit{correctness}: the patch that \textit{diff x y} computes can be used to faithfully reproduces \textit{y} from \textit{x}.
+        \[
+            \forall \: x \: y \: . \: apply (diff \: x \: y) \: x \: \equiv \: Just \: y
+        \]
+        \item The second being \textit{preciseness}:
+        \[
+            \forall \: x \: y \: . \: apply (diff \: x \: x) \: y \: \equiv \: Just \: y
+        \]
+        \item The last being \textit{computationally efficient}: Both the \textit{diff} and \textit{apply} functions needs to be space and time efficient.
+    \end{itemize}
+    \item There have been several attempts at generalizing UNIX diff results to handle arbitrary datatypes, but following the same recipe: enumerate all combinations of insertions, deletions and copies that transform the source into the destination and choose the ‘best’ one. We argue that this design has two weaknesses when generalized to work over arbitrary types:
+    \begin{itemize}
+        \item The non-deterministic nature of the design makes the algorithms inefficient.
+        \item There exists no canonical ‘best’ patch and the choice is arbitrary.
+    \end{itemize}
+    \item This paper explores a novel direction for differencing algorithms: rather than restricting ourselves to \textit{insertions, deletions,} and \textit{copy operations}, we allow the \textit{arbitrary reordering, duplication,} and \textit{contraction of subtrees}.
+\end{itemize}
+
+\section{Tree Diffing: A Concrete Example}

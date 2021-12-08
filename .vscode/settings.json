@@ -1,0 +1,26 @@
+{
+    "files.exclude": {
+        // Core latex/pdflatex auxiliary files
+        "**/*.aux": true,
+        "**/*.lof": true,
+        "**/*.log": true,
+        "**/*.lot": true,
+        "**/*.fls": true,
+        "**/*.out": true,
+        "**/*.toc": true,
+        "**/*.fmt": true,
+        "**/*.fot": true,
+        "**/*.cb": true,
+        "**/*.cb2": true,
+        "**/.*.lb": true,
+        // Build tool auxiliary files
+        "**/*.fdb_latexmk": true,
+        "**/*.synctex": true,
+        "**/*.synctex(busy)": true,
+        "**/*.synctex.gz": true,
+        "**/*.synctex.gz(busy)": true,
+        "**/*.pdfsync": true,
+    },
+    "editor.wordWrap": "on",
+    "latex-workshop.message.badbox.show": false
+}
