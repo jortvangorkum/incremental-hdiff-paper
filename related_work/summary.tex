@@ -2,6 +2,14 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{minted}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+
+\newenvironment{haskell}{\VerbatimEnvironment\begin{center}\begin{minted}[escapeinside=!!]{haskell}}{\end{minted}\end{center}}
+
+\newcommand{\inlinehaskell}[1]{\mintinline{haskell}{#1}}
 
 \title{
     {Summary - Related Work}
