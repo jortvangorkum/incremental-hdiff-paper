@@ -2,3 +2,5 @@
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qhaskell\\E$"}
 {"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\Q| LeafC | Node2C Tree23C Tree23C | Node3C Tree23C Tree23C Tree23C\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qtype Change23 !\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QWe develop a structural diffing algorithm truediff that yields concise and type-safe edit scripts and we prove it runs in linear time.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QWe evaluate the conciseness and performance of truediff and the applicability for incremental computing.\\E$"}
