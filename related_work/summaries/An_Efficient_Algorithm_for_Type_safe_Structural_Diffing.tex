@@ -150,4 +150,53 @@ Effectively computing the difference between two versions of a source file has b
         merkleRoot (Node3H (_, hx) (_, hy) (_, hz))
             = hash (encode "3" ++ hx ++ hy ++ hz)
     \end{haskell}
+    \item The second source of inefficiency is enumerating all possible subtrees, which can be addressed by choosing a better data structure.
+    \item  Given that a Digest is just a [Word], the optimal choice for such “database” is a Trie, mapping a [Word] to a MetaVar. Trie lookups are efficient and hardly depend on the number of elements in the trie.
+\end{itemize}
+
+\section{Tree Diffing Generically}
+\begin{itemize}
+    \item Take the Tree23 type, its structure can be seen in a sum-of-products fashion through the Tree23SOP type given below.
+    \begin{haskell}
+        type Tree23SOP = `[`[]                -- Leaf
+                          , `[I 0, I 0]       -- Node2
+                          , `[I 0, I 0, I 0]] -- Node3
+    \end{haskell}
+    \item The outer list represents the choice of constructor, and packages the sum part of the datatype whereas the inner list represents the product of the fields of a given constructor.
+    \item The \inlinehaskell{`} notation represents a value that has been promoted to the type level
+    \item The atoms, in this case only \inlinehaskell{I 0}, represent a recursive position referencing the first type in the family.
+    \item The \texttt{generics-mrsop} uses the type \inlinehaskell{Atom} to distinguish whether a field is a recursive position referencing the n-th type in the family, I n, or an opaque type, for example, \inlinehaskell{Int} or \inlinehaskell{Bool}, which are represented by \inlinehaskell{K KInt}, \inlinehaskell{K KBool}.
+    \item Let us now take a mutually recursive family with more than one element and see how it is represented within the generics-mrsop framework.
+    \begin{haskell}
+        data Zig = Zig Int  | ZigZag Zag
+        data Zag = Zag Bool | ZigZag Zig
+
+        type ZigCodes = `[`[`[K KInt],  `[I 1]]
+                         ,`[`[K KBool], `[I 0]]]
+    \end{haskell}
+    \item The code acts as a recipe that the representation functor must follow in order to interpret those into a type of kind *.
+    \item The representation is defined by the means of n-ary sums (\textit{NS}) and products (\textit{NP}) that work by induction on the codes and one interpretation for atoms (\textit{NA}).
+    \item We define the representation functor Rep as the composition of the interpretations of the different pieces:
+    \begin{haskell}
+        type Rep !$\varphi$! = NS (NP (NA !$\varphi$!))
+    \end{haskell}
+    \item Finally, we tie the recursive knot with a functor of kind \inlinehaskell{Nat -> *} that is passed as a parameter to \textit{NA} in order to interpret the recursive positions.
+    \begin{haskell}
+        newtype Fix (codes :: `[`[`[Atom]]]) (ix :: Nat)
+            = Fix { unFix :: Rep (Fix codes) (Lkup codes ix) }
+    \end{haskell}
+    \item Here, \inlinehaskell{Lkup codes ix} denotes the type level lookup of the element with index \texttt{ix} within the list codes.
+    \item We start defining the generic notion of context, called \inlinehaskell{Tx}. Analogously to \inlinehaskell{Tree23C}.
+    \item \inlinehaskell{Tx} enables us to augment mutually recursive family with type holes.
+    \item We can read \inlinehaskell{Tx codes !$\varphi$! at} as the element of the mutually recursive family \texttt{codes} indexed by \texttt{at} augmented with holes of type $\varphi$. Its definition follows:
+    \begin{haskell}
+        data Tx :: [[[Atom]]] -> (Atom -> *) -> Atom -> * where
+            TxHole :: !$\varphi$! at -> Tx codes !$\varphi$! at
+            TxOpq  :: Opq k -> Tx codes !$\varphi$! (K k)
+            TxPeel :: Constr (Lkup codes i) c
+                   -> NP (Tx codes !$\varphi$!) (Lkup (Lkup codes i) c)
+                   -> Tx codes !$\varphi$! (I i) 
+    \end{haskell}
+    \item Looking at the definition of \inlinehaskell{Tx}, we see that its values consist in either a typed hole, some opaque value, or a constructor and a product of fields.
+    \item The \inlinehaskell{Tx} type is, in fact, the indexed free monad over the \inlinehaskell{Rep}.
 \end{itemize}
