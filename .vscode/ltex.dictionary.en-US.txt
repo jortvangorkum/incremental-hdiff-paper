@@ -18,3 +18,5 @@ hdiff
 trie
 Trie
 merkleRoot
+metavariable
+catamorphism

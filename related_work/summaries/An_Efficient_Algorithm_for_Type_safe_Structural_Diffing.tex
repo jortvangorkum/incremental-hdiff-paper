@@ -88,7 +88,7 @@ Effectively computing the difference between two versions of a source file has b
     \end{haskell}
     \begin{figure}[H]
         \centering
-        \includegraphics[width=.8\textwidth]{summaries/patch_tree23.png}
+        \includegraphics[width=.8\textwidth]{patch_tree23.png}
         \caption{Patch23 Example}
         \label{fig:patch_tree23}
     \end{figure}
@@ -199,4 +199,80 @@ Effectively computing the difference between two versions of a source file has b
     \end{haskell}
     \item Looking at the definition of \inlinehaskell{Tx}, we see that its values consist in either a typed hole, some opaque value, or a constructor and a product of fields.
     \item The \inlinehaskell{Tx} type is, in fact, the indexed free monad over the \inlinehaskell{Rep}.
+    \item Essentially, a value of type \inlinehaskell{Tx codes !$\varphi$! at} is a value of type \inlinehaskell{NA (Fix codes) at} augmented with holes of type $\varphi$.
+\end{itemize}    
+
+\subsection{Generic Representation of Changes}
+\begin{itemize}
+    \item With a generic notion of contexts, we can go ahead and define our generic Change type.
+    \begin{haskell}
+        data Change codes !$\varphi$! at = Change (Tx codes !$\varphi$! at) (Tx codes !$\varphi$! at)
+    \end{haskell}
+    \item The interpretation for the metavariables, \inlinehaskell{MetaVar}, now carries the integer representing the metavariable itself but also carries information to identify whether this metavariable is supposed to be instantiated by a recursive member of the family or an opaque type.
+    \begin{haskell}
+        data MetaVar at = MetaVar Int (NA (Const Unit) at)
+    \end{haskell}
+    \item The type of changes over \inlinehaskell{Tree23} can now be written using the generic representation for changes and metavariables.
+    \begin{haskell}
+        type ChangeTree23 = Change Tree23Code MetaVar (I 0)
+    \end{haskell}
+    \item We can read the type above as the type of changes over the zero-th \inlinehaskell{(I 0)} type within the mutually recursive family \inlinehaskell{Tree23Code} with values of type \inlinehaskell{MetaVar} in its holes.
 \end{itemize}
+
+\newpage
+\section{Defining the Generic Oracle}
+\begin{itemize}
+    \item  The \textit{synthesize} function is just like a catamorphism, but we decorate the tree with the intermediate results at each node, rather than only using them to compute the final outcome. This enables us to decorate each node of a \inlinehaskell{Fix codes} with a unique identifier by running the generic decorate function, defined below.
+    \begin{haskell}
+        newtype AnnFix x codes i 
+            = AnnFix (x i, Rep (AnnFix x codes) (Lkup codes i))
+
+        decorate :: Fix codes i -> AnnFix (Const Digest) codes i
+        decorate = synthesize authAlgebra
+
+        merkleRoot :: AnnFix (Const Digest) codes i -> Digest
+        merkleRoot (AnnFix (Const r, _)) = r
+    \end{haskell}
+    \item Here, \inlinehaskell{AnnFix} is the cofree comonad, used to add a label to each recursive branch of our generic trees.
+    \item The \inlinehaskell{Exist} datatype simply encapsulate the \texttt{ix} type index from a \inlinehaskell{Fix codes ix} into an existential one.
+\end{itemize}
+
+\section{Merging Patches}
+\begin{itemize}
+    \item The merging problem is the problem of computing a new patch, $q \: // \: p$, given two patches \textit{p} and \textit{q}. It consists in a patch that contains the changes of \textit{q} adapted to work on a value that has already been modified by \textit{p}.
+    \item If \textit{p} and \textit{q} are disjoint, then $p \: // \: q$ can return \textit{p} without further adaptations. Our algorithm shall merge only disjoint patches, marking all other situations as a conflict.
+    \item Our merging operator, (//), receives two patches and returns a patch possibly annotated with conflicts. We do so by matching the spines, and carefully inspecting any changes where the spines differ.
+    \begin{minted}[escapeinside=!!]{haskell}
+        p // q = txMap (uncurry' reconcile) $ txGCP p q
+    \end{minted}
+    \item Here, the \texttt{reconcile} function shall check whether the disagreeing parts are disjoint
+\end{itemize}
+
+\section{Experiments}
+\begin{itemize}
+    \item Merge Evaluation. We were able to solve a total of 66 conflicts automatically, amounting to 11\% of all the conflicts we encountered.
+    \item Performance Evaluation. In order to evaluate the performance of our implementation we have timed the computation of the two diffs, \texttt{diff o a} and diff o b, for each merge conflict \texttt{a, o, b} in our dataset.
+    \item The results were expected given that we have seen how diff x y runs in O(n + m) where n and m are the number of constructors in x and y abstract syntax trees, respectively.
+    \item We see that around 90\% of our dataset falls within a one-second runtime.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=.8\textwidth]{plot_time_diffing.png}
+        \caption{Plot of the time for diffing files}
+        \label{fig:diffing_time}
+    \end{figure}
+    \item There are two main threats to the validity of our empirical results. 
+    \begin{itemize}
+        \item Firstly, we are diffing and merging abstract syntax trees, hence ignoring comments and formatting.
+        \item Secondly, a significant number of developers prefer to rebase their branches instead of merging them. Therefore, we may have missed a number of important merge conflicts that are no longer recorded, as rebasing erases history.
+    \end{itemize}
+\end{itemize}
+
+\section{Future Work}
+\begin{itemize}
+    \item One interesting direction for further work is how to control the sharing of subtrees. As it stands, the differencing algorithm will share every subtree that occurs in both the source and destination files. This can lead to undesirable behavior.
+    \item Better Merge Algorithm.
+    \item Extending the Generic Universe.
+\end{itemize}
+
+\section{Conclusion}
+Throughout this paper we have developed an efficient type-directed algorithm for computing structured differences for a large class of algebraic datatypes, namely, mutually recursive families. This class of types can represent the abstract syntax tree of most programming languages and, hence, our algorithm can be readily instantiated to compute the difference between programs written in these languages. We have validated our implementation by computing diffs between Lua source files obtained from various repositories on GitHub; the algorithm's run-time is competitive, and even a naive merging algorithm already offers a substantial improvement over existing technology, for the former is tree-based and the latter is line-based. Together, these results demonstrate both a promising direction for further research and a novel application of the generic programming technology that is readily available in today's functional languages.
