@@ -1,0 +1,26 @@
+\chapter{Sums of Products for Mutually Recursive Datatypes}
+
+\section{Abstract}
+Generic programming for mutually recursive families of datatypes is hard. On the other hand, most interesting abstract syntax trees are described by a mutually recursive family of datatypes. We could give up on using that mutually recursive structure, but then we lose the ability to use those generic operations which take advantage of that same structure. We present a new approach to generic programming that uses modern Haskell features to handle mutually recursive families with explicit sum-of-products structure. This additional structure allows us to remove much of the complexity previously associated with generic programming over these types.
+
+\section{Introduction}
+\begin{itemize}
+    \item The novelty in our work is in the intersection of both the expressivity of multirec, allowing the encoding of mutually recursive families, with the convenience of the more modern generics-sop style.
+    \item The availability of several libraries for generic programming witnesses the fact that there are trade-offs between expressivity, ease of use, and underlying techniques in the design of such a library.
+\end{itemize}
+
+\subsection{Explicit Recursion}
+\begin{itemize}
+    \item If we do not mark recursion explicitly, \textit{shallow} encodings are our sole option, where only one layer of the value is turned into a generic form.
+    \item The other side of the spectrum would be the \textit{deep} representation, in which the entire value is turned into the representation that the generic library provides in one go. 
+    \begin{itemize}
+        \item These representations are usually more involved as they need an extra mechanism to represent recursion.
+        \item A \textit{deep} encoding requires some explicit \textit{least fixpoint} combinator - usually called \textit{Fix} in Haskell.
+    \end{itemize}
+    \item Depending on the use case, a shallow representation might be more efficient if only part of the value needs to be inspected. On the other hand, deep representations are sometimes easier to use, since the conversion is performed in one go, and afterwards one only has to work with the constructs from the generic library.
+\end{itemize}
+
+\subsection{Sum of Products}
+\begin{itemize}
+    \item 
+\end{itemize}

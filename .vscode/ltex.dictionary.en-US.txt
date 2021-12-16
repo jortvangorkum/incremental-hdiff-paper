@@ -20,3 +20,5 @@ Trie
 merkleRoot
 metavariable
 catamorphism
+expressivity
+encodings
