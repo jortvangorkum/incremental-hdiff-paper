@@ -22,5 +22,59 @@ Generic programming for mutually recursive families of datatypes is hard. On the
 
 \subsection{Sum of Products}
 \begin{itemize}
-    \item 
+    \item Most generic programming libraries build their type level descriptions out of three basic combinators
+    \begin{itemize}
+        \item \textit{constants}, which indicate a type is atomic and should not be expanded further;
+        \item \textit{products} (usually written as $:*:$) which are used to build tuples;
+        \item and \textit{sums} (usually written as $:+:$) which encode the choice between constructors.
+    \end{itemize}
+    \item The \texttt{generic-sop} library explicitly uses a list of lists of types,
+    \begin{itemize}
+        \item the outer one representing the sum
+        \item and each inner one thought of as products.
+    \end{itemize}
+    \item The \inlinehaskell{`} sign in the code below marks the list as operating at the type level, as opposed to term-level lists which exist at run-time.
+    \begin{itemize}
+        \item An example of Haskell's \textit{datatype} promotion.
+        \begin{haskell}
+            Code_sop(Bin a) = `[`[a], `[Bin a, Bin a]]
+        \end{haskell}
+    \end{itemize}
+    \item The \textit{representation} is mapping the \textit{codes}, of kind \inlinehaskell{`[`[*]]} into \inlinehaskell{*}. The \textit{code} can be seen as the format that the \textit{representation} must adhere to. Previously, in the pattern functor approach, the \textit{representation} was not guaranteed to have a certain structure.
+\end{itemize}
+
+\subsection{Mutually recursive datatypes}
+\begin{itemize}
+    \item Unfortunately, most of the generic programming approaches restrict themselves to \textit{regular} types, in which recursion always goes into the \textit{same} datatype, which is the one being defined.
+    \item The syntax of many programming languages is expressed naturally using a mutually recursive family. 
+    \item The motivation of our work stems from the desire of having the concise structure that \textit{codes} give to the \textit{representations}, together with the information for recursive positions in a mutually recursive setting.
+\end{itemize}
+
+\section{Background}
+\subsection{GHC Generics}
+\begin{itemize}
+    \item Upon reflecting on the generic function, we see a number of issues.
+    \begin{itemize}
+        \item Most notably is the amount of boilerplate to achieve a conceptually simple task. This is a direct consequence of not having access to the \textit{sum-of-products} structure that Haskell's \inlinehaskell{data} declarations follow.
+        \item A second issue is that the generic representation does not carry any information about the recursive structure of the type.
+        \item Perhaps even more subtle, but also more worrying, is that we have no guarantees that the $Rep_{gen} \:\; a$ of type \textit{a} will be defined using only the supported \textit{pattern functors}. 
+    \end{itemize}
+\end{itemize}
+
+\subsection{True Sums of Products}
+\begin{itemize}
+    \item In comparison to the \texttt{GHC Generics} implementation we see two improvements.
+    \begin{itemize}
+        \item We need one fewer type class, and
+        \item the definition is combinator-based.
+    \end{itemize}
+    \item There are still downsides to this approach.
+    \begin{itemize}
+        \item A notable one is the need to carry constraints around.
+    \end{itemize}
+\end{itemize}
+
+\section{Explicit Fix: Diving Deep and Shallow}
+\begin{itemize}
+    \item We have combined the insight from the \texttt{regular} library of keeping track of recursive positions with the convenience of the \texttt{generics-sop} for enforcing a specific \textit{normal form} on representations. By doing so, we were able to provide a \textit{deep} encoding for free.
 \end{itemize}
