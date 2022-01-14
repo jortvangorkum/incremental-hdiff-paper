@@ -1,4 +1,49 @@
 \section{Background}
-\begin{itemize}
-    \item What is the existing technology and literature that I'll be studying/using in my research
-\end{itemize}
+% \begin{itemize}
+%     \item What is the existing technology and literature that I'll be studying/using in my research
+% \end{itemize}
+
+\subsection{An Efficient Algorithm for Type-Safe Structural Diffing}
+The paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} by Victor Cacciari Miraldo and Wouter Swierstra presents an efficient datatype-generic algorithm to compute the difference between two values of any algebraic datatype. In particular, the algorithm readily works over the abstract syntax tree (AST) of a programming language\cite{miraldo2019efficient}.
+
+The algorithm when implemented in Haskell contains two main functions the \texttt{diff} and \texttt{apply}. The \texttt{diff} function computes the difference between two values of type \texttt{a}, and the \texttt{apply} function attempts to transform one value according to the information stored in the \texttt{Patch}.
+\begin{haskell}
+    diff  :: a -> a -> Patch a
+    apply :: Patch a -> a -> Maybe a
+\end{haskell}
+
+These functions are expected to fulfill some properties. The first being \textit{correctness}: the patch that \texttt{diff x y} computes can be used to faithfully reproduces \texttt{y} from \texttt{x}.
+\begin{haskell}
+    !$\forall$! x y . apply(diff x y) x !$\equiv$! Just y
+\end{haskell}
+The second being \textit{preciseness}:
+\begin{haskell}
+    !$\forall$! x y . apply(diff x x) y !$\equiv$! Just y
+\end{haskell}
+The last being \textit{computationally efficient}: both the \textit{diff} and \textit{apply} functions needs to be space and time efficient.
+
+The most commonly used diffing algorithm by version control systems is the UNIX \texttt{diff}\cite{hunt1976algorithm} or also known as the Hunt-McIlroy algorithm. The UNIX \texttt{diff} satisfying these previously stated properties for \inlinehaskell{a !$\equiv$! [String]}\cite{miraldo2019efficient}. Several attempts have been made to generalize this algorithm for arbitrary datatypes, but the way the UNIX \texttt{diff} represents the \texttt{Patch} using only \textit{insertions, deletions} and \textit{copies of lines} has two weaknesses. Firstly, the non-deterministic nature of the design makes the algorithm inefficient, and secondly, there exists no canonical 'best' patch and the choice is arbitrary\cite{miraldo2019efficient}.
+
+Miraldo's and Swierstra's algorithm improves this shortcoming by introducing more operations: \textit{arbitrary reordering, duplication} and \textit{contraction of subtrees}. This restricts non-determinism, making it easier to compute patches and increasing the opportunities for copying.
+
+
+% \subsubsection{Tree Diffing}
+% \begin{itemize}
+    
+%     \item An example datatype
+%     \begin{haskell}
+%         type MetaVar = Int
+
+%         data Tree23 !$\varphi$! = Hole !$\varphi$!
+%                        | Leaf
+%                        | Node2 Tree23 Tree23
+%                        | Node3 Tree23 Tree23 Tree23
+%     \end{haskell}
+%     \item A new datatype \inlinehaskell{Tree23} $\varphi$, enables us to annotate a \texttt{Tree} with holes of $\varphi$.
+%     \item These metavariables correspond to arbitrary trees that are \textit{common subtrees} of both the source and destination of change.
+%     \item A \textit{change} can then be represented as a pair of contexts. The first context is, called the \textit{deletion context}; the second, called the \textit{insertion context}
+%     \begin{haskell}
+%         type Change23 !$\varphi$! = (Tree23 !$\varphi$!, Tree23 !$\varphi$!)
+%     \end{haskell}
+% \end{itemize}
+

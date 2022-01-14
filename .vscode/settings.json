@@ -13,6 +13,11 @@
         "**/*.cb": true,
         "**/*.cb2": true,
         "**/.*.lb": true,
+        "**/*.bbl": true,
+        "**/*.bcf": true,
+        "**/*.blg": true,
+        "**/*.run.xml": true,
+        "**/_minted-*": true,
         // Build tool auxiliary files
         "**/*.fdb_latexmk": true,
         "**/*.synctex": true,
@@ -54,6 +59,20 @@
             "args": [
                 "%DOCFILE%"
             ]
+        }
+    ],
+    "grammarly.overrides": [
+        {
+            "files": [
+                "**/sections/background.tex"
+            ],
+            "config": {
+                "audience": "knowledgeable",
+                "dialect": "american",
+                "domain": "academic",
+                "emotions": [],
+                "goals": []
+            }
         }
     ]
 }

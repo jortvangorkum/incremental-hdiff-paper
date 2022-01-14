@@ -5,6 +5,19 @@
 \usepackage[utf8]{inputenc}
 \usepackage{lastpage}
 
+\usepackage{biblatex}
+\addbibresource{sections/references.bib}
+
+% Changes the paragraph indentations to newlines
+\usepackage[parfill]{parskip}
+
+\usepackage[a4paper]{geometry}
+
+\usepackage{minted}
+\newenvironment{haskell}{\VerbatimEnvironment\begin{center}\begin{minted}[escapeinside=!!]{haskell}}{\end{minted}\end{center}}
+
+\newcommand{\inlinehaskell}[1]{\mintinline[escapeinside=!!]{haskell}{#1}}
+
 \usepackage{graphicx}
 \graphicspath{ {../images} }
 
@@ -13,6 +26,9 @@
 \fancyhf{} % Clears the default header and footers
 \fancyhead[L]{Incremental Type-Safe Structural Diffing}
 \fancyhead[R]{Page \thepage\ of \pageref{LastPage}}
+
+\linespread{1.4}
+
 
 %%%%%%%%%%%%
 % DOCUMENT %
@@ -41,5 +57,7 @@
 \newpage
 \input{sections/appendix.tex}
 
+\newpage
+\printbibliography
 
 \end{document}

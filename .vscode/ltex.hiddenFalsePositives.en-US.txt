@@ -1,6 +1,0 @@
-{"rule":"THE_PUNCT","sentence":"^\\QIn this paper we present an efficient datatype-generic algorithm to compute the difference between two elements of any mutually recursive family The diff function computes these differences between two values of type a, and apply attempts to transform one value according to the information stored in the Patch provided to it.\\E$"}
-{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qhaskell\\E$"}
-{"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\Q| LeafC | Node2C Tree23C Tree23C | Node3C Tree23C Tree23C Tree23C\\E$"}
-{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qtype Change23 !\\E$"}
-{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QWe develop a structural diffing algorithm truediff that yields concise and type-safe edit scripts and we prove it runs in linear time.\\E$"}
-{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QWe evaluate the conciseness and performance of truediff and the applicability for incremental computing.\\E$"}
