@@ -5,6 +5,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{lastpage}
 
+\usepackage{todonotes}
+
 \usepackage{biblatex}
 \addbibresource{sections/references.bib}
 
@@ -43,10 +45,12 @@
 \maketitle
 \thispagestyle{empty} % Removes the first page number at the bottom
 
+\listoftodos
+
 \input{sections/introduction.tex}
 
 \newpage
-\input{sections/background.tex}
+\input{sections/background/main.tex}
 
 \newpage
 \input{sections/preliminary_results.tex}

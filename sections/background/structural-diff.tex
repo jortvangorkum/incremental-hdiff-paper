@@ -22,9 +22,11 @@ The second being \textit{preciseness}:
 \end{haskell}
 The last being \textit{computationally efficient}: both the \textit{diff} and \textit{apply} functions needs to be space and time efficient.
 
-The most commonly used diffing algorithm by version control systems is the UNIX \texttt{diff}\cite{hunt1976algorithm} or also known as the Hunt-McIlroy algorithm. The UNIX \texttt{diff} satisfying these previously stated properties for \inlinehaskell{a !$\equiv$! [String]}\cite{miraldo2019efficient}. Several attempts have been made to generalize this algorithm for arbitrary datatypes, but the way the UNIX \texttt{diff} represents the \texttt{Patch} using only \textit{insertions, deletions} and \textit{copies of lines} has two weaknesses. Firstly, the non-deterministic nature of the design makes the algorithm inefficient, and secondly, there exists no canonical 'best' patch and the choice is arbitrary\cite{miraldo2019efficient}.
+The most commonly used diffing algorithm by version control systems is the Hunt-McIlroy algorithm used by the UNIX \texttt{diff} utility\cite{hunt1976algorithm}. The UNIX \texttt{diff} satisfies these previously stated properties for \inlinehaskell{a !$\equiv$! [String]}\cite{miraldo2019efficient}. Several attempts have been made to generalize this algorithm for arbitrary datatypes, but the way the UNIX \texttt{diff} represents the \texttt{Patch} using only \textit{insertions, deletions} and \textit{copies of lines} has two weaknesses. Firstly, the non-deterministic nature of the design makes the algorithm inefficient, and secondly, there exists no canonical 'best' patch and the choice is arbitrary\cite{miraldo2019efficient}.
 
 Miraldo's and Swierstra's algorithm improves this shortcoming by introducing more operations: \textit{arbitrary reordering, duplication} and \textit{contraction of subtrees}. This restricts non-determinism, making it easier to compute patches and increasing the opportunities for copying.
+
+\todo[inline]{Write a piece about how the diff function uses an oracle which uses cryptographic hashes}
 
 
 % \subsubsection{Tree Diffing}

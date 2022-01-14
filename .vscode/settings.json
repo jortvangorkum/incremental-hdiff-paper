@@ -16,6 +16,7 @@
         "**/*.bbl": true,
         "**/*.bcf": true,
         "**/*.blg": true,
+        "**/*.tdo": true,
         "**/*.run.xml": true,
         "**/_minted-*": true,
         // Build tool auxiliary files
