@@ -28,7 +28,9 @@
         "**/*.synctex.gz(busy)": true,
         "**/*.pdfsync": true,
     },
-    "editor.wordWrap": "on",
+    "[latex]": {
+        "editor.wordWrap": "on",
+    },
     "latex-workshop.message.badbox.show": false,
     "latex-workshop.latex.tools": [
         {
