@@ -65,7 +65,7 @@
     "grammarly.overrides": [
         {
             "files": [
-                "**/sections/background.tex"
+                "**/sections/*.tex"
             ],
             "config": {
                 "audience": "knowledgeable",

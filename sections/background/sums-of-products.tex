@@ -1,9 +1,15 @@
 \subsection{Sums of Products for Mutually Recursive Datatypes}
-The paper \textit{Sums of Products for Mutually Recursive Datatypes} written by Victor Cacciari Miraldo and Alejandro Serrano presents a new approach to generic programming using recursive positions to handle mutually recursive families and the \textit{sum-of-products} structure. This work (\texttt{generics-msrop}) is later used by the paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} by Victor Cacciari Miraldo and Wouter Swierstra\cite{miraldo2019efficient} to define the generic version of their diffing algorithm. Compared to existing generic programming libraries, \texttt{generics-mrsop} has \textit{deep explicit recursion, sums of products} and supports \textit{mutually recursive datatypes}.
+The paper \textit{Sums of Products for Mutually Recursive Datatypes} written by Victor Cacciari Miraldo and Alejandro Serrano\cite{miraldo2019efficient} presents a new approach to generic programming using recursive positions to handle mutually recursive families and the \textit{sum-of-products} structure. This work (\texttt{generics-msrop}) is later used by the paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} by Victor Cacciari Miraldo and Wouter Swierstra\cite{miraldo2019efficient} to define the generic version of their diffing algorithm. Compared to existing generic programming libraries, \texttt{generics-mrsop} has \textit{deep explicit recursion, sums of products} and supports \textit{mutually recursive datatypes}.
 
 \paragraph{Explicit recursion} There are two ways to represent values. One contains the information on what properties of a datatype are recursive. The other does not contain that information. If we do not know explicitly if the property is recursive, then only one layer of the value can be formed into a generic representation. This is called \textit{shallow} encoding. If we explicitly keep track of the recursive property, then the entire value can be transformed into a generic representation. This is called \textit{deep} encoding. Using the \textit{deep} encoding more datatypes can be defined generically (e.g., a generic \textit{map} or generic Zipper datatype).
 
-\paragraph{Sums of Products}
+\paragraph{Sums of Products} The \texttt{generic-sop} library uses a list of lists of types. The outer list represents the sum and the inner list represents the product. The sum represents the choice between two constructors; the product represents a combination of two constructors. An example of a \texttt{Code} representation of a \texttt{BinTree} is 
+\begin{haskell}
+    data BinTree a = Leaf a
+                   | Node (BinTree a) (BinTree a)
+                   
+    Code_BinTree(Bin a) = `[`[a], `[Bin a, Bin a]]
+\end{haskell}
+Here the \inlinehaskell{`} sign in the code promotes the definition to the type-level instead of a run-time value. The use of \textit{Sums of Products} makes it considerably easier to represent generic datatypes.
 
-\todo[inline]{Explain sums of products}
-\todo[inline]{Explain mutually recursive datatypes}
+\paragraph{Mutually recursive datatypes} Most of the generic programming libraries are restricted to only allowing recursion on the same datatype, which is the one being defined. Mutually recursive datatypes are recursively defined in each other's terms. This means that most generic programming libraries do not support mutually recursive datatypes. Which limits the ability to generically represent the syntax of many programming languages. Thus \texttt{generic-sop} introduces recursive positions on a type level, which can be used to define mutually recursive datatypes.
