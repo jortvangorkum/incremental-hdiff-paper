@@ -4,7 +4,7 @@
 % \end{itemize}
 
 \subsection{An Efficient Algorithm for Type-Safe Structural Diffing}
-The paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} by Victor Cacciari Miraldo and Wouter Swierstra presents an efficient datatype-generic algorithm to compute the difference between two values of any algebraic datatype. In particular, the algorithm readily works over the abstract syntax tree (AST) of a programming language\cite{miraldo2019efficient}.
+The paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} by Victor Cacciari Miraldo and Wouter Swierstra presents an efficient datatype-generic algorithm called \textit{hdiff} to compute the difference between two values of any algebraic datatype. In particular, the algorithm readily works over the abstract syntax tree (AST) of a programming language\cite{miraldo2019efficient}.
 
 The algorithm when implemented in Haskell contains two main functions the \texttt{diff} and \texttt{apply}. The \texttt{diff} function computes the difference between two values of type \texttt{a}, and the \texttt{apply} function attempts to transform one value according to the information stored in the \texttt{Patch}.
 \begin{haskell}
