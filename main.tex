@@ -9,6 +9,7 @@
 
 \usepackage{biblatex}
 \addbibresource{sections/references.bib}
+\usepackage[hidelinks]{hyperref}
 
 % Changes the paragraph indentations to newlines
 \usepackage[parfill]{parskip}
@@ -20,8 +21,10 @@
 
 \newcommand{\inlinehaskell}[1]{\mintinline[escapeinside=!!]{haskell}{#1}}
 
+\usepackage{float}
+
 \usepackage{graphicx}
-\graphicspath{ {../images} }
+\graphicspath{ {images} }
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -31,6 +34,7 @@
 
 \linespread{1.4}
 
+\usepackage[inline]{enumitem}
 
 %%%%%%%%%%%%
 % DOCUMENT %

@@ -20,32 +20,27 @@ The second being \textit{preciseness}:
 \begin{haskell}
     !$\forall$! x y . apply(diff x x) y !$\equiv$! Just y
 \end{haskell}
-The last being \textit{computationally efficient}: both the \textit{diff} and \textit{apply} functions needs to be space and time efficient.
+The last being \textit{computationally efficient}: both the \texttt{diff} and \texttt{apply} functions needs to be space and time efficient.
 
 The most commonly used diffing algorithm by version control systems is the Hunt-McIlroy algorithm used by the UNIX \texttt{diff} utility\cite{hunt1976algorithm}. The UNIX \texttt{diff} satisfies these previously stated properties for \inlinehaskell{a !$\equiv$! [String]}\cite{miraldo2019efficient}. Several attempts have been made to generalize this algorithm for arbitrary datatypes, but the way the UNIX \texttt{diff} represents the \texttt{Patch} using only \textit{insertions, deletions} and \textit{copies of lines} has two weaknesses. Firstly, the non-deterministic nature of the design makes the algorithm inefficient, and secondly, there exists no canonical 'best' patch and the choice is arbitrary\cite{miraldo2019efficient}.
 
 Miraldo's and Swierstra's algorithm improves this shortcoming by introducing more operations: \textit{arbitrary reordering, duplication} and \textit{contraction of subtrees}. This restricts non-determinism, making it easier to compute patches and increasing the opportunities for copying.
 
-\todo[inline]{Write a piece about how the diff function uses an oracle which uses cryptographic hashes}
+\newpage
+To make the \texttt{diff} algorithm work, an implementation of \textit{which common subtree} needs to be defined. The \texttt{wcs} function is a function that when given two trees and a subtree, returns the position of the subtree inside the trees if both contain the subtree. Otherwise, the function returns nothing. An example of a naive implementation would be:
 
+\begin{haskell}
+    wcs :: Tree -> Tree -> Tree -> Maybe Int
+    wcs s d x = elemIndex x (subtrees s !$\cap$! subtrees d) 
+\end{haskell}
 
-% \subsubsection{Tree Diffing}
-% \begin{itemize}
-    
-%     \item An example datatype
-%     \begin{haskell}
-%         type MetaVar = Int
+The paper identifies two inefficiencies using this naive implementation.
+\begin{enumerate*}[label=(\Alph*)]
+    \item Checking trees for equality is linear in the size of the tree;
+    \item Furthermore, enumerating all subtrees is exponential.
+\end{enumerate*}
 
-%         data Tree23 !$\varphi$! = Hole !$\varphi$!
-%                        | Leaf
-%                        | Node2 Tree23 Tree23
-%                        | Node3 Tree23 Tree23 Tree23
-%     \end{haskell}
-%     \item A new datatype \inlinehaskell{Tree23} $\varphi$, enables us to annotate a \texttt{Tree} with holes of $\varphi$.
-%     \item These metavariables correspond to arbitrary trees that are \textit{common subtrees} of both the source and destination of change.
-%     \item A \textit{change} can then be represented as a pair of contexts. The first context is, called the \textit{deletion context}; the second, called the \textit{insertion context}
-%     \begin{haskell}
-%         type Change23 !$\varphi$! = (Tree23 !$\varphi$!, Tree23 !$\varphi$!)
-%     \end{haskell}
-% \end{itemize}
+To improve the first inefficiency of the naive \texttt{wcs} implementation is to use cryptographic hash functions to compare the equality of the trees. To check the trees for equality in constant time the trees are decorated with a hash at every node in the tree. Then, using the precomputed hash and the root node of the given tree, the hash of a subtree is calculated in constant time.
+
+The second inefficiency of the naive \texttt{wcs} implementation is improved by using a \texttt{Trie}\cite{brass2008trie} datastructure. 
 

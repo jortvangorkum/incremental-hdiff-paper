@@ -2,5 +2,14 @@
 
 The paper \textit{Concise, Type-Safe, and Efficient Structural Diffing} written by Erdweg, Sebastian and Szab{\'o}, Tam{\'a}s and Pacak, Andr{\'e} presents a structural diffing algorithm called \textit{truediff}\cite{erdweg2021concise}. \textit{truediff} ensures that the patches produces are concise and type safe, and with a performance by an order of magnitude higher than Gumtree\cite{falleri2014gumtree} and the \textit{hdiff}\cite{miraldo2019efficient} algorithm.
 
-\todo[inline]{Describe briefly the inner workings of the algorithm}
+To compute the difference between a source tree and a target tree, \textit{truediff} operates in four steps:
+\begin{enumerate*}[label={(\arabic*)}]
+    \item prepare subtree equivalence relations;
+    \item find reusable candidates;
+    \item select reusable candidates;
+    \item and compute the edit script.
+\end{enumerate*}
+
+The equivalence relations used in step 1, exist out of two equivalence relations, both encoded through cryptographic hashes. The first equivalence relation is used to identify reusable candidates. The second equivalence relation is used to identify preferred reusable candidates. The paper found that using structural equivalence to identify candidates and literal equivalence to select preferred candidates yields very concise edit scripts.
+
 \todo[inline]{Describe how hdiff compares}

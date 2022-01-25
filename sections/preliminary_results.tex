@@ -5,6 +5,15 @@
     \item How can I generalize these results? What problems have I identified or do I expect?
 \end{itemize}
 
+\begin{figure}[H]
+  \centering
+
+  \includegraphics[width=.6\textwidth]{plot_generate_result_benchmark.pdf}
+  \caption{Compute the result}
+  \label{fig-compute-result}
+\end{figure}
+
+
 \begin{haskell}
 merkle :: Merkelize f => Fix f -> Fix (f :*: K Digest)
 merkle = In . merkleIn . unFix
