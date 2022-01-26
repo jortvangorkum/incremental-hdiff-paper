@@ -1,8 +1,8 @@
 \section{Appendix}
 \appendix
 
-\label{app-def-generic-datatypes}
 \section{Definition Generic Datatypes}
+\label{app-def-generic-datatypes}
 \begin{haskell}
 data I r         = I r                  
 data K a r       = K a                  
@@ -10,8 +10,8 @@ data (:+:) f g r = Inl (f r) | Inr (g r)
 data (:*:) f g r = Pair (f r, g r)      
 \end{haskell}
 
-\label{app-def-fixpoint}
 \section{Definition Fixpoint}
+\label{app-def-fixpoint}
 \begin{haskell}
 data Fix f = In { unFix :: f (Fix f) }
 
@@ -22,48 +22,48 @@ instance Show (f (Fix f)) => Show (Fix f) where
     show = show . unFix
 \end{haskell}
 
-\label{app-impl-merkelize}
 \section{Implementation Merkelize}
+\label{app-impl-merkelize}
 \begin{haskell}
 instance (Show a) => Merkelize (K a) where
   merkleIn (K x) = Pair (K x, K h)
     where
-      h = digestConcat [digest "K", digest x]
+      h = hashConcat [hash "K", hash x]
 
 instance Merkelize I where
   merkleIn (I x) = Pair (I prevX, K h)
     where
       prevX@(In (Pair (_, K ph))) = merkle x
-      h = digestConcat [digest "I", ph]
+      h = hashConcat [hash "I", ph]
 
 instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
   merkleIn (Inl x) = Pair (Inl prevX, K h)
     where
       (Pair (prevX, K ph)) = merkleIn x
-      h = digestConcat [digest "Inl", ph]
+      h = hashConcat [hash "Inl", ph]
   merkleIn (Inr x) = Pair (Inr prevX, K h)
     where
       (Pair (prevX, K ph)) = merkleIn x
-      h = digestConcat [digest "Inr", ph]
+      h = hashConcat [hash "Inr", ph]
 
 instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
   merkleIn (Pair (x, y)) = Pair (Pair (prevX, prevY), K h)
     where
       (Pair (prevX, K phx)) = merkleIn x
       (Pair (prevY, K phy)) = merkleIn y
-      h = digestConcat [digest "Pair", phx, phy]
+      h = hashConcat [hash "Pair", phx, phy]
 \end{haskell}
 
-\label{app-impl-cata-sum-inter-results}
 \section{Implementation Cata Sum with Intermediate Results}
+\label{app-impl-cata-sum-inter-results}
 \begin{haskell}
 cataMerkleTree :: TreeG Int -> (M.Map String Int, Int)
 cataMerkleTree t = cata sumTree merkleTree
   where
-    merkleTree :: Fix (TreeF a :*: K Digest)
+    merkleTree :: Fix (TreeF a :*: K hash)
     merkleTree = merkle t
 
-    sumTree :: (TreeG Int :*: K Digest) Int -> Int
+    sumTree :: (TreeG Int :*: K hash) Int -> Int
     sumTree (Pair (px, K h)) = case px of
       -- Leaf  
       Inl (K x)                       
