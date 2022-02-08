@@ -53,23 +53,3 @@ instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
       (Pair (prevY, K phy)) = merkleIn y
       h = hashConcat [hash "Pair", phx, phy]
 \end{haskell}
-
-\section{Implementation Cata Sum with Intermediate Results}
-\label{app-impl-cata-sum-inter-results}
-\begin{haskell}
-cataMerkleTree :: TreeG Int -> (M.Map String Int, Int)
-cataMerkleTree t = cata sumTree merkleTree
-  where
-    merkleTree :: Fix (TreeF a :*: K hash)
-    merkleTree = merkle t
-
-    sumTree :: (TreeG Int :*: K hash) Int -> Int
-    sumTree (Pair (px, K h)) = case px of
-      -- Leaf  
-      Inl (K x)                       
-        -> (M.insert h x M.empty, x) 
-      -- Node
-      Inr (Pair (Pair (I (xl, ml), K x), I (xr, mr))) 
-        -> let n = x + xl + xr 
-           in (M.insert h n (ml <> mr), n) 
-\end{haskell}

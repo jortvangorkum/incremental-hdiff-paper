@@ -3,3 +3,16 @@
     \item What will I do with the remainder of my thesis?
     \item Give an approximate estimation/timetable for what you will do and when you will be done.    
 \end{itemize}
+
+% Generic library te schrijven die de incremental computation automatisch doet
+% Welke parameters kunnen we tweaken om goeie performance te krijgen
+\todo[inline]{Writing a generic library to automatically cache the incremental computation}
+\todo[inline]{Which parameters can be tweaked to have the best performance / memory}
+\todo[inline]{What type of equivalence do you need to reuse incremental computation}
+\todo[inline]{What type of datastructures are the best to use for caching}
+
+\todo[inline]{Define the implementation where the intermediate results are automatically generated}
+\begin{haskell}
+class CataMerkle f where
+    cataMerkle :: (f a -> a) -> Fix (f :*: K Digest) -> (M.Map String a, a)
+\end{haskell}

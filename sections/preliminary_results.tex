@@ -21,20 +21,38 @@ class (Functor f) => Merkelize f where
            => f (Fix g) -> (f :*: K Hash) (Fix (g :*: K Hash))
 \end{haskell}
 
-The generic datatypes can also be used to define a \texttt{cata} function. The \texttt{cata} or catamorphism is a generalization of the concept of a fold, which means it deconstructors a data structure into its underlying functor\cite{HaskellWikiCatamorphism}.
+The generic datatypes can also use a \texttt{cata} function. The \texttt{cata} or catamorphism is a generalization of the concept of a fold, which means it deconstructs a data structure into its underlying functor\cite{HaskellWikiCatamorphism}.
 
 \begin{haskell}
 cata :: Functor f => (f a -> a) -> Fix f -> a
 cata alg t = alg (fmap (cata alg) (unFix t)) 
 \end{haskell}
 
-The \texttt{cata} function can then be used to calculate, for example, the sum of all the nodes and leaves of the tree.
+The \texttt{cata} function can then be used to, for example, calculate the sum of all the values of the nodes and the leaves of the tree.
 
 \begin{haskell}
 cataSum :: TreeG Int -> Int
 cataSum = cata (\case
-  Inl (K x)                         -> x
+  Inl (K x)                         -> x         
   Inr (Pair (Pair (I l, K x), I r)) -> l + x + r)
+\end{haskell}
+
+\begin{haskell}
+cataMerkleTree :: TreeG Int -> (M.Map String Int, Int)
+cataMerkleTree t = cata sumTree merkleTree
+  where
+    merkleTree :: Fix (TreeF a :*: K hash)
+    merkleTree = merkle t
+
+    sumTree :: (TreeG Int :*: K hash) Int -> Int
+    sumTree (Pair (px, K h)) = case px of
+      -- Leaf  
+      Inl (K x)                       
+        -> (M.insert h x M.empty, x) 
+      -- Node
+      Inr (Pair (Pair (I (xl, ml), K x), I (xr, mr))) 
+        -> let n = x + xl + xr 
+           in (M.insert h n (ml <> mr), n) 
 \end{haskell}
 
 \begin{itemize}
