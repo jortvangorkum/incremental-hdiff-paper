@@ -11,8 +11,3 @@
 \todo[inline]{What type of equivalence do you need to reuse incremental computation}
 \todo[inline]{What type of datastructures are the best to use for caching}
 
-\todo[inline]{Define the implementation where the intermediate results are automatically generated}
-\begin{haskell}
-class CataMerkle f where
-    cataMerkle :: (f a -> a) -> Fix (f :*: K Digest) -> (M.Map String a, a)
-\end{haskell}

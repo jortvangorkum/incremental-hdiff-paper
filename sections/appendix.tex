@@ -53,3 +53,12 @@ instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
       (Pair (prevY, K phy)) = merkleIn y
       h = hashConcat [hash "Pair", phx, phy]
 \end{haskell}
+
+\section{Results of computing the sum of a Tree}
+\begin{table}[H]
+  \centering
+  
+  \input{tables/plot_generate_result_benchmark.tex}
+  \caption{Compute the result}
+  \label{app-table-compute-result}
+\end{table}

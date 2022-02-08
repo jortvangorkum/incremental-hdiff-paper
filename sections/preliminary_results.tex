@@ -37,14 +37,17 @@ cataSum = cata (\case
   Inr (Pair (Pair (I l, K x), I r)) -> l + x + r)
 \end{haskell}
 
+\newpage
+To keep track of the incremental computation of the summation of the tree, a HashMap\cite{HaskellDataMap} is used. The calculation of the incremental step is inserted into the HashMap and a pair of the HashMap and the result is returned. The implementation for the \texttt{TreeG} datatype is: 
+
 \begin{haskell}
-cataMerkleTree :: TreeG Int -> (M.Map String Int, Int)
+cataMerkleTree :: TreeG Int -> (Map Hash Int, Int)
 cataMerkleTree t = cata sumTree merkleTree
   where
-    merkleTree :: Fix (TreeF a :*: K hash)
+    merkleTree :: Fix (TreeF a :*: K Hash)
     merkleTree = merkle t
 
-    sumTree :: (TreeG Int :*: K hash) Int -> Int
+    sumTree :: (TreeG Int :*: K Hash) Int -> Int
     sumTree (Pair (px, K h)) = case px of
       -- Leaf  
       Inl (K x)                       
@@ -55,15 +58,49 @@ cataMerkleTree t = cata sumTree merkleTree
            in (M.insert h n (ml <> mr), n) 
 \end{haskell}
 
+The problem with this implementation is that it only works for the \texttt{TreeG} datatype. A generic definition for the should look something like this:
+
+\todo[inline]{Define the implementation where the intermediate results are automatically generated}
+\begin{haskell}
+class CataMerkle f where
+    cataMerkle :: (f a -> a) -> Fix (f :*: K Hash) -> (Map Hash a, a)
+    cataMerkleWithMap :: (f a -> a) -> Map Hash a -> Fix (f :*: K Hash) 
+                      -> (Map Hash a, a)
+\end{haskell}
+
+\newpage
+Then using the previously generated HashMap, we can then calculate the result reusing the previously incremental computations:
+
+\begin{haskell}
+cataMerkleTreeWithMap :: Map Hash Int -> TreeG Int -> (Int, Map Hash Int)
+cataMerkleTreeWithMap m (In (Pair (x, K h))) = 
+  case lookup h m of
+    Just n  -> (n, m)
+    Nothing -> case x of
+      Inl (K x) -> (x, insert h x empty)
+      Inr (Pair (Pair (I l, K x), I r)) -> (x', m')
+        where
+          (xl, ml) = cataMerkleTreeWithMap m l
+          (xr, mr) = cataMerkleTreeWithMap ml r
+          x' = x + xl + xr
+          m' = insert h x' mr
+\end{haskell}
+
+Using the previously defined cata functions we can determine the performance of the functions by using the \texttt{criterion}\cite{HaskellCriterion} package. For a benchmark in \texttt{criterion}, first the environment is setup. Then the bench function is executed multiples times within a certain timeframe. The result of the multiple executions is used to calculate the mean and standard deviation of the time executed. 
+
+The results of the \texttt{cataSum}, \texttt{cataMerkleTree} and \texttt{cataMerkleTreeWithMap} is seen in the graph. 
+
+\begin{figure}[H]
+  \centering
+  
+  \includegraphics[width=.7\textwidth]{plot_generate_result_benchmark.pdf}
+  \caption{Compute the result}
+  \label{fig-compute-result}
+\end{figure}
+
+
+
 \begin{itemize}
   \item What examples can you handle already?
   \item How can I generalize these results? What problems have I identified or do I expect?
 \end{itemize}
-
-\begin{figure}[H]
-  \centering
-
-  \includegraphics[width=.6\textwidth]{plot_generate_result_benchmark.pdf}
-  \caption{Compute the result}
-  \label{fig-compute-result}
-\end{figure}
