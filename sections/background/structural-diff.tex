@@ -1,46 +1,24 @@
 \section{Background}
-% \begin{itemize}
-%     \item What is the existing technology and literature that I'll be studying/using in my research
-% \end{itemize}
 
 \subsection{An Efficient Algorithm for Type-Safe Structural Diffing}
 The paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} by Victor Cacciari Miraldo and Wouter Swierstra presents an efficient datatype-generic algorithm called \textit{hdiff} to compute the difference between two values of any algebraic datatype. In particular, the algorithm readily works over the abstract syntax tree (AST) of a programming language\cite{miraldo2019efficient}.
 
-The algorithm when implemented in Haskell contains two main functions the \texttt{diff} and \texttt{apply}. The \texttt{diff} function computes the difference between two values of type \texttt{a}, and the \texttt{apply} function attempts to transform one value according to the information stored in the \texttt{Patch}.
-\begin{haskell}
-    diff  :: a -> a -> Patch a
-    apply :: Patch a -> a -> Maybe a
-\end{haskell}
-
-These functions are expected to fulfill some properties. The first being \textit{correctness}: the patch that \texttt{diff x y} computes can be used to faithfully reproduces \texttt{y} from \texttt{x}.
-\begin{haskell}
-    !$\forall$! x y . apply(diff x y) x !$\equiv$! Just y
-\end{haskell}
-The second being \textit{preciseness}:
-\begin{haskell}
-    !$\forall$! x y . apply(diff x x) y !$\equiv$! Just y
-\end{haskell}
-The last being \textit{computationally efficient}: both the \texttt{diff} and \texttt{apply} functions needs to be space and time efficient.
-
-The most commonly used diffing algorithm by version control systems is the Hunt-McIlroy algorithm used by the UNIX \texttt{diff} utility\cite{hunt1976algorithm}. The UNIX \texttt{diff} satisfies these previously stated properties for \inlinehaskell{a !$\equiv$! [String]}\cite{miraldo2019efficient}. Several attempts have been made to generalize this algorithm for arbitrary datatypes, but the way the UNIX \texttt{diff} represents the \texttt{Patch} using only \textit{insertions, deletions} and \textit{copies of lines} has two weaknesses. Firstly, the non-deterministic nature of the design makes the algorithm inefficient, and secondly, there exists no canonical 'best' patch and the choice is arbitrary\cite{miraldo2019efficient}.
-
-Miraldo's and Swierstra's algorithm improves this shortcoming by introducing more operations: \textit{arbitrary reordering, duplication} and \textit{contraction of subtrees}. This restricts non-determinism, making it easier to compute patches and increasing the opportunities for copying.
-
-\newpage
-To make the \texttt{diff} algorithm work, an implementation of \textit{which common subtree} needs to be defined. The \texttt{wcs} function is a function that when given two trees and a subtree, returns the position of the subtree inside the trees if both contain the subtree. Otherwise, the function returns nothing. An example of a naive implementation would be:
+To make the \textit{hdiff} algorithm work, an implementation of which common subtree needs to be defined. The \texttt{wcs} function is a function that when given two trees and a subtree, returns the position of the subtree inside the trees if both contain the subtree. Otherwise, the function returns nothing. An example of a naive implementation would be:
 
 \begin{haskell}
-    wcs :: Tree -> Tree -> Tree -> Maybe Int
-    wcs s d x = elemIndex x (subtrees s !$\cap$! subtrees d) 
+wcs :: Tree -> Tree -> Tree -> Maybe Int
+wcs s d x = elemIndex x (subtrees s !$\cap$! subtrees d) 
 \end{haskell}
+
+Here the function \texttt{subtrees} enumerates all the subtrees of a given tree. Then \texttt{elemIndex} returns the index when the subtree is found, otherwise it returns nothing. 
 
 The paper identifies two inefficiencies using this naive implementation.
 \begin{enumerate*}[label=(\Alph*)]
-    \item Checking trees for equality is linear in the size of the tree;
-    \item Furthermore, enumerating all subtrees is exponential.
+    \item Furthermore, enumerating all subtrees is exponential;
+    \item checking trees for equality is linear in the size of the tree.
 \end{enumerate*}
 
 To improve the first inefficiency of the naive \texttt{wcs} implementation is to use cryptographic hash functions to compare the equality of the trees. To check the trees for equality in constant time the trees are decorated with a hash at every node in the tree. Then, using the precomputed hash and the root node of the given tree, the hash of a subtree is calculated in constant time.
 
-The second inefficiency of the naive \texttt{wcs} implementation is improved by using a \texttt{Trie}\cite{brass2008trie} datastructure. 
+The second inefficiency of the naive \texttt{wcs} implementation is improved by using a \texttt{Trie}\cite{brass2008trie} datastructure. Given that a \texttt{Hash} is just a \inlinehaskell{[Char]}, this makes the \texttt{Trie} datastructure the preferred choice to store the enumerated subtrees. And because the \texttt{Hash} has a constant size the \texttt{Trie} lookups are efficient and runs in amortized constant time.
 
