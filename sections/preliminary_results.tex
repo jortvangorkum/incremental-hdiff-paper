@@ -1,5 +1,5 @@
 \section{Preliminary Results}
-Before writing the algorithm using the generic library \texttt{generic-msrop}\cite{miraldo2018sums}, the algorithm is written using simpler self-defined generic datatypes with a fixpoint, which are defined in Appendix \ref{app-def-generic-datatypes} and \ref{app-def-fixpoint}. An example of how the generic datatypes can be used is:
+The prototype algorithm is written using simpler self-defined generic datatypes with a fixpoint, which are defined in Appendix \ref{app-def-generic-datatypes} and \ref{app-def-fixpoint}. An example of how the generic datatypes can be used is:
 \begin{haskell}
 data Tree a = Leaf a
             | Node (Tree a) a (Tree a)

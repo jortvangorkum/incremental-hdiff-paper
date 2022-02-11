@@ -8,10 +8,10 @@
 \todo[inline]{Cache the incremental computation over the data type}
 
 \subsection{Research Questions}
-\begin{itemize}
-    \item What is/are your research questions/contributions?
-\end{itemize}
-
-\todo[inline]{What type of data structures / dsl can be used to keep track of the incremental computations}
-
-Can be used to perform static analysis in a more performant manner.
+\begin{enumerate}[label={(\Alph*)}]
+    \item A library needs to be implemented which contains the generic \texttt{merkle}, \texttt{cataMerkle} and \texttt{cataMerkleWithMap} functions
+    \item Then using that library, what parameters can be tweaked to have the best ratio of performance and memory usage?
+    \item What type of equivalence is needed to reuse the incremental computation?
+    \item What type of data structures are the best for storing the incremental computation?
+    \item Could be used to perform static analysis in a more performant manner.
+\end{enumerate}
