@@ -5,15 +5,21 @@
 \end{itemize}
 
 \subsection{Exploratory topics}
-\begin{enumerate}
-    \item Writing a generic library to automatically cache the incremental computation
-    \item Which parameters can be tweaked to have the best performance / memory
-    \item What type of equivalence do you need to reuse incremental computation
-    \item What type of datastructures are the best to use for caching
-    \begin{itemize}
-        \item Storing the results in a Trie datastructure
-    \end{itemize}
+During the first part of the Thesis project, multiple topics are thought of that need further research/implementation in the second part of the Thesis project.
+\begin{enumerate}[label={(\Alph*)}]
+    \item A library needs to be implemented which contains the generic \texttt{merkle}, \texttt{cataMerkle} and \texttt{cataMerkleWithMap} functions
+    \item Then using that library, what parameters can be tweaked to have the best ratio of performance and memory usage?
+    \item What type of equivalence is needed to reuse the incremental computation?
+    \item What type of data structures are the best for storing the incremental computation?
 \end{enumerate}
+
+To implement the generic \texttt{merkle}, \texttt{cata} and \texttt{cataWithMap} functions, the \texttt{generics-msrop} library described in Section \ref{sec-sums-of-products} is a good candidate to use for implementing these functions. This is because it supports mutually recursive datatypes, meaning that a large group of datatypes are supported. 
+
+\todo[inline]{Describe the parameter tweaking using the selective memoization paper}
+
+In the paper \textit{Concise, Type-Safe, and Efficient Structural Diffing} in Section \ref{sec-concise-struct-diff} they describe using two equivalence relations instead of one. Using two equivalence relations could lead to more opportunities for reusing computed results. However, further research is needed on how feasible it is using two equivalence relations. 
+
+For the data structures used for storing the incremental computation, the easiest to use would be using a \texttt{HashMap}. But, the paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} described in Section \ref{sec-efficient-struct-diff} suggest using a different data structure, the \texttt{Trie} data structure. Further research could be done in comparing the performance and memory usage of both data structures.
 
 \newpage
 \subsection{Schedule}

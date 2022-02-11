@@ -1,6 +1,7 @@
 \section{Background}
 
 \subsection{An Efficient Algorithm for Type-Safe Structural Diffing}
+\label{sec-efficient-struct-diff}
 The paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} by Victor Cacciari Miraldo and Wouter Swierstra presents an efficient datatype-generic algorithm called \textit{hdiff} to compute the difference between two values of any algebraic datatype. In particular, the algorithm readily works over the abstract syntax tree (AST) of a programming language\cite{miraldo2019efficient}.
 
 To make the \textit{hdiff} algorithm work, an implementation of which common subtree needs to be defined. The \texttt{wcs} function is a function that when given two trees and a subtree, returns the position of the subtree inside the trees if both contain the subtree. Otherwise, the function returns nothing. An example of a naive implementation would be:
