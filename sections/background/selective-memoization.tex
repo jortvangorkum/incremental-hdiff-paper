@@ -1,9 +1,10 @@
-\section{Selective memoization}
+\section{Selective Memoization}
+\label{sec-select-mem}
 
 The paper \textit{Selective Memoization} by Umut A. Acar, Guy E. Blelloch and Robert Harper\cite{acar2003selective} presents a framework for applying memoization selectively. Also, it describes what type of key issues there are with implementing memoization efficiently:
-\begin{enumerate*}[label={(\Alph*)}]
+\begin{enumerate*}[label={(\alph*)}]
     \item equality; 
-    \item precise dependences and 
+    \item precise dependencies and 
     \item space management.
 \end{enumerate*}
 
@@ -11,7 +12,6 @@ For equality, the cost of having an equality test can negate the advantage of us
 
 The second approach suggested is to ensure that there is only one copy of every value, known as a "hash consing". If there is only one copy, equality can then be implemented by comparing locations. The problem with hash consing is it demands a large amount of memory and has trouble working with the garbage collection. An alternative proposed by \Citeauthor{pugh1989incremental}\cite{pugh1989incremental}, is lazy structure sharing.\todo{Maybe add an explanation of what lazy structure sharing is}
 
-For precise dependences
-\todo[inline]{Add precise dependences}
+For precise dependencies, to maximize the reuse of the results, the results need to depend on the true dependencies. This means that the results can depend on a subset of the parameters. The subset of parameters leads to a partial equality check, which can increase the likelihood of results reuse. 
 
-\todo[inline]{Add space management}
+For space management, as the program gets executed, the size of the space used can become a limiting factor. To alleviate this problem the results should be disposed of when the space usage becomes too large. The disposed of result should be the one that leads to the fewest amount of recomputation. One widely used approach presented in the paper is to replace the least recently used entry. The disposed of policy must be application-specific according to the paper, because there are programs whose performance is made worse, by using a fixed policy.
