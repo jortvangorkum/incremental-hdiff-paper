@@ -1,9 +1,4 @@
 \section{Timetable and Planning}
-\begin{itemize}
-    \item What will I do with the remainder of my thesis?
-    \item Give an approximate estimation/timetable for what you will do and when you will be done.    
-\end{itemize}
-
 \subsection{Exploratory topics}
 During the first part of the Thesis project, multiple topics are thought of that need further research/implementation in the second part of the Thesis project.
 
@@ -17,46 +12,61 @@ For the data structures used for storing the incremental computation, the easies
 
 \newpage
 \subsection{Schedule}
+
+Priority 1 is the lowest, 5 is the highest.
+\begin{table}[H]
+    \setlength{\tabcolsep}{8pt}
+    \centering
+    \small
+    \bigskip
+    \begin{tabular}{|c|l|l|}
+        \hline
+        Category & Work & Priority \\
+        \hline
+        \multirow{2}{7em}{Implementation} & Implementing Generic CataMerkle library using \texttt{generics-msrop} & 5 \\
+         & Implementing tests & 4 \\
+        \hline
+        \multirow{6}{7em}{Experiments} & Creating benchmarks & 5 \\
+         & Experiment using different parameters for space management & 4 \\
+         & Experiment using different data structures & 4 \\
+         & Experiment using real-world data & 3 \\
+         & Experiment using different parameters for equality & 2 \\
+         & Experiment using different parameters for precise dependencies & 1 \\
+        \hline
+    \end{tabular}
+\caption{Category priority list}
+\label{table:priorities}
+\end{table}
+
 \begin{table}[H]
 \setlength{\tabcolsep}{8pt}
 \centering
 \small
 \bigskip
-\begin{tabularx}{0.965\textwidth}{|l|l|l|l|}
+\begin{tabular}{|l|l|l|}
     \hline
-    Week & Date & Category & Work \\
+    Week & Date & Category \\
     \hline
     % \midrule
-    Week 1 & 28 feb - 04 mar & Implementation & Generic CataMerkle \\
-    Week 2 & 07 mar - 11 mar & Implementation & Generic CataMerkle \\
-    Week 3 & 14 mar - 18 mar & Implementation & Using Generic MSROP library \\
-    Week 4 & 21 mar - 25 mar & Implementation & Using Generic MSROP library \\
+    Week 1 - 4 & 28 feb - 25 mar & Implementation \\
     \hline
-    Week 5 & 28 mar - 01 apr & Experiments & Creating benchmarks \\
-    Week 6 & 04 apr - 08 apr & Experiments & Creating benchmarks \\
-    Week 7 & 11 apr - 15 apr & Experiments & Using real-world data for benchmarks \\
-    Week 8 & 18 apr - 22 apr & Experiments & Using real-world data for benchmarks \\
+    Week 5 - 10 & 28 mar - 06 may & Experiments \\
     \hline
-    Week 9 & 25 apr - 29 apr & Analysis & Test using different parameters  \\
-    Week 10 & 02 may - 06 may & Analysis & Test using different parameters  \\
+    Week 11 - 13 & 08 mar - 13 may & Writing \\
     \hline
-    Week 11 - 10 & 08 mar - 15 apr & Writing & Experiments \\
-    Week 12 - 13 & 18 apr - 06 may & Writing & Discussion \\
-    Week 13 & 09 may - 13 may & Writing & Conclusion \\
+    Week 14 - 17 & 16 may - 3 jun & Feedback \\
     \hline
-    Week 14 - 17 & 16 may - 3 jun & Feedback & Process final feedback \\
+    Week 18 - 19 & 6 jun - 17 jun & Time Left (Vacation/Overdue Work) \\
     \hline
-    Week 18 - 19 & 6 jun - 17 jun & Time Left & Vacation / Overdue work \\
+    Week 20 & 20 jun - 24 jun & Finalize \\
     \hline
-    Week 20 & 20 jun - 24 jun & Finalize & Finalizing the Thesis \\
+    Week 21 & 27 jun - 1 jul & Vacation \\
     \hline
-    Week 21 & 27 jun - 1 jul & Vacation & - \\
-    \hline
-    Week 27 & 08 aug - 12 aug & Submission & Presentation \& Thesis hand-in \\
+    Week 27 & 08 aug - 12 aug & Submission \\
     \hline 
-    Week 28 & 15 aug & Finish & End Date Research Project \\
+    Week 28 & 15 aug & End Date Research Project  \\
     \hline
-\end{tabularx}
-\caption{Planning per week}
+\end{tabular}
+\caption{Planning per category}
 \label{table:planning}
 \end{table}
