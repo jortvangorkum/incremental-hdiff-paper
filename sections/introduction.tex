@@ -1,15 +1,17 @@
 \newpage
 \section{Introduction}
-When computing a result over a data type, a small change would lead to completely recomputing the result. Parts of the recomputation results in the same results as the previous computation. By keeping track of the intermediate results and then reusing the result when part of the data type is the same, would lead to less computation. 
+When computing a result over a data type, a small change would lead to completely recomputing the result. Parts of the recomputation give the same results as the previous computation. By keeping track of the intermediate results and reusing the results when the input is the same, fewer computations have to be performed. 
 
-An example of computing a result over a data type is computing the \textbf{binary tree maximum path sum}. Given a \texttt{Tree}, starting at the root node, find a path from top to bottom that leads to the maximum total.
+An example of computing a result over a data type is computing the \textbf{maximum path sum} over a binary tree. Given a \inlinehaskell{BinTree}, starting at the root node, find a path from the root node to the leaves that leads to the maximum total.
+
+The implementation of the computation is done in \texttt{Haskell}. And the definition of the binary tree and example is:
 \begin{haskell}
-data Tree = Leaf Int
-          | Node Tree Int Tree 
+data BinTree = Leaf Int
+             | Node BinTree Int BinTree 
 \end{haskell}
 
 \begin{haskell}
-exampleTree :: Tree    
+exampleTree :: BinTree    
 exampleTree = Node (Node (Leaf 8) 7 (Leaf 9)) 3 (Node (Leaf 5) 4 (Leaf 2))
 \end{haskell}
 
@@ -19,11 +21,9 @@ exampleTree = Node (Node (Leaf 8) 7 (Leaf 9)) 3 (Node (Leaf 5) 4 (Leaf 2))
     \caption{Graphic visualization of the \inlinehaskell{exampleTree}}
 \end{figure}
 
-An implementation of computing the max path sum over data type \texttt{Tree} is:
-
-\todo[inline]{This function does not work for negative values}
+An implementation of computing the max path sum over data type \inlinehaskell{BinTree} is and has a complexity of $\mathcal{O}(N)$.
 \begin{haskell}
-maxPathSum :: Tree -> Int
+maxPathSum :: BinTree -> Int
 maxPathSum (Leaf x)     = x
 maxPathSum (Node l x r) = x + max (maxPathSum l, maxPathSum r)
 \end{haskell}
@@ -44,13 +44,15 @@ maxPathSum exampleTree !$\equiv$! 19
 \end{figure}
 
 \todo[inline]{Add function complexities to the explanation}
-To store the intermediate results of the computation of the max path sum, first, the \texttt{Tree} needs to be decorated for every \inlinehaskell{Node} and \inlinehaskell{Leaf} with a hash of its underlying structure. An implementation of decorating a \texttt{Tree} is:
+To reduce the number of recomputations, first, we need to compare the structure of the data type for equality. When comparing the data type structure for equality, if they are equal, the previously computed result can be reused. Otherwise, the result needs to be recomputed. To compare the structure of the data type in constant time, we introduce the use of hash functions. Generating a hash every time a comparison takes place would be inefficient because part of the structure does not change. Thus, every substructure in the data type stores the hash of its substructure. 
+
+In the example, a new data type is introduced: the \inlinehaskell{MerkleTree}. This data type is the same as the \inlinehaskell{BinTree}, but the constructors also contain a \inlinehaskell{Hash}. To create a \inlinehaskell{MerkleTree}, we traverse through a \inlinehaskell{BinTree} and hash the structure and store it. Creating a \inlinehaskell{MerkleTree} has a time complexity of $\mathcal{O}(N)$.
 
 \begin{haskell}
 data MerkleTree = LeafH Hash Int
-                | NodeH Hash Tree Int Tree
+                | NodeH Hash MerkleTree Int MerkleTree
 
-merkle :: Tree -> MerkleTree
+merkle :: BinTree -> MerkleTree
 merkle (Leaf x)     = LeafH (hash ["Leaf", x]) x
 merkle (Node l x r) = NodeH (hash ["Node", x, hl, hr]) l' x r'
   where
@@ -63,10 +65,10 @@ merkle (Node l x r) = NodeH (hash ["Node", x, hl, hr]) l' x r'
 \begin{figure}[H]
     \centering
     \includegraphics[width=.32\textwidth]{MerkleTree.pdf}
-    \caption{The \texttt{MerkleTree} of \inlinehaskell{exampleTree}}
+    \caption{The \inlinehaskell{MerkleTree} of \inlinehaskell{exampleTree}}
 \end{figure}
 
-Then using the precomputed hashes of the \texttt{MerkleTree}, a \texttt{Map} of intermediate results can easily be created by:
+Then using the precomputed hashes of the \inlinehaskell{MerkleTree}, a \texttt{Map} of intermediate results can easily be created by:
 
 \begin{haskell}
 maxPathSumInc :: MerkleTree -> (Int, Map Hash Int)    
@@ -106,10 +108,10 @@ maxPathSumInc (NodeH h l x r) = (y, insert h y (ml <> mr))
             \hline
         \end{tabular}
     \end{minipage}
-    \caption{The \texttt{MerkleTree} with intermediate results}    
+    \caption{The \inlinehaskell{MerkleTree} with intermediate results}    
 \end{figure}
 
-When there is a change in the \texttt{Tree}, only a part of the node hashes needs to be rehashed.
+When there is a change in the \inlinehaskell{BinTree}, only a part of the node hashes needs to be rehashed.
 
 \begin{figure}[H]
     \centering
@@ -135,6 +137,7 @@ maxPathSumMap m (NodeH h l x r) = case lookup m h of
 
 In this paper, an implementation of storing the intermediate results is presented, supporting generic data types. That means the developer only needs to implement the max path sum functionality and the intermediate results are automatically stored.
 
+\newpage
 \subsection{Contributions}
 \begin{enumerate}[label={(\Alph*)}]
     \item A library needs to be implemented which contains the generic \texttt{merkle}, \texttt{cataMerkle} and \texttt{cataMerkleWithMap} functions

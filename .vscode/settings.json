@@ -77,6 +77,22 @@
                 "emotions": [],
                 "goals": []
             }
+        },
+        {
+            "files": [
+                "**/sections/introduction.tex"
+            ],
+            "config": {
+                "audience": "knowledgeable",
+                "dialect": "american",
+                "domain": "academic",
+                "emotions": [
+                    "neutral"
+                ],
+                "goals": [
+                    "inform"
+                ]
+            }
         }
     ]
 }
