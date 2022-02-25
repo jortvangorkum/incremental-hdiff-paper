@@ -10,7 +10,7 @@ The paper \textit{Selective Memoization} by Umut A. Acar, Guy E. Blelloch and Ro
 
 For equality, the cost of having an equality test can negate the advantage of using memoization. In the paper, there are a few approaches proposed to alleviate this problem. The first is based on the equality test not having to be exact. So, for expensive equality tests, it could determine to skip the test or use a less expensive equality test. 
 
-The second approach suggested is to ensure that there is only one copy of every value, known as a "hash consing". If there is only one copy, equality can then be implemented by comparing locations. The problem with hash consing is it demands a large amount of memory and has trouble working with the garbage collection. An alternative proposed by \Citeauthor{pugh1989incremental}\cite{pugh1989incremental}, is lazy structure sharing.\todo{Maybe add an explanation of what lazy structure sharing is}
+The second approach suggested is to ensure that there is only one copy of every value, known as a "hash consing". If there is only one copy, equality can then be implemented by comparing locations. The problem with hash consing is it demands a large amount of memory and has trouble working with the garbage collection. An alternative proposed by \Citeauthor{pugh1989incremental}\cite{pugh1989incremental}, is lazy structure sharing.
 
 For precise dependencies, to maximize the reuse of the results, the results need to depend on the true dependencies. This means that the results can depend on a subset of the parameters. The subset of parameters leads to a partial equality check, which can increase the likelihood of results reuse. 
 

@@ -10,7 +10,10 @@ In the paper \textit{Concise, Type-Safe, and Efficient Structural Diffing} in Se
 
 For the data structures used for storing the incremental computation, the easiest to use would be using a \texttt{HashMap}. But, the paper \textit{An Efficient Algorithm for Type-Safe Structural Diffing} described in Section \ref{sec-efficient-struct-diff} suggest using a different data structure, the \texttt{Trie} data structure. Further research could be done in comparing the performance and memory usage of both data structures.
 
-\todo[inline]{Add explanation of incremental updating merkle tree and using Zipper or Lenses to solve it}
+To update the data type and its merkelized version in an efficient manner, we only want to update the hashes of the changes and their parents. To support this, we need functionality for the developer to say where a piece of the data type has to be changed. There are two approaches to support this. The first approach is a Zipper\cite{huet1997zipper}. A Zipper is a pointer that points to a specific location in a data structure. The second approach is Lenses\cite{steckermeier2015lenses}.
+
+
+\todo[inline]{Add an explanation of incremental updating Merkle tree and using Zipper or Lenses to solve it}
 
 \newpage
 \subsection{Schedule}

@@ -21,7 +21,7 @@ exampleTree = Node (Node (Leaf 8) 7 (Leaf 9)) 3 (Node (Leaf 5) 4 (Leaf 2))
     \caption{Graphic visualization of the \inlinehaskell{exampleTree}}
 \end{figure}
 
-An implementation of computing the max path sum over data type \inlinehaskell{BinTree} is and has a complexity of $\mathcal{O}(N)$.
+An implementation of computing the max path sum over data type \inlinehaskell{BinTree} is and has a complexity of $\mathcal{O}(N)$, where $N$ is the number of nodes in the tree.
 \begin{haskell}
 maxPathSum :: BinTree -> Int
 maxPathSum (Leaf x)     = x
@@ -43,7 +43,6 @@ maxPathSum exampleTree !$\equiv$! 19
 \end{minipage}
 \end{figure}
 
-\todo[inline]{Add function complexities to the explanation}
 To reduce the number of recomputations, first, we need to compare the structure of the data type for equality. When comparing the data type structure for equality, if they are equal, the previously computed result can be reused. Otherwise, the result needs to be recomputed. To compare the structure of the data type in constant time, we introduce the use of hash functions. Generating a hash every time a comparison takes place would be inefficient because part of the structure does not change, which leads to the same hash. Thus, every substructure in the data type stores the hash of its substructure. 
 
 In the example, a new data type is introduced: the \inlinehaskell{MerkleTree}. This data type is the same as the \inlinehaskell{BinTree}, but the constructors also contain a \inlinehaskell{Hash}. To create a \inlinehaskell{MerkleTree}, we traverse through a \inlinehaskell{BinTree} and hash the structure and store it. Creating a \inlinehaskell{MerkleTree} has a time complexity of $\mathcal{O}(N)$.
@@ -70,7 +69,7 @@ merkle (Node l x r) = NodeH (hash ["Node", x, hl, hr]) l' x r'
 
 To compute the max path sum and its intermediate results, we can use the precomputed hashes of the \inlinehaskell{MerkleTree} to efficiently generate a \inlinehaskell{Map Hash Int}. The complexity of computing the max path sum and the intermediate results is $\mathcal{O}(N)$.   
 
-The example implementation of computing the max path sum and its intermediate results can be seen below. However this implementation uses a \texttt{union} (\inlinehaskell{<>}) to combine the \inlinehaskell{Map}'s which has a complexity of $\mathcal{O}(m*log(n/m + 1)), m <= n$. This can be implemented more efficiently by giving the \inlinehaskell{Map} to the left side and then to the right side of the Tree, which makes it a constant operation. Except, this would make the code more complex. 
+The example implementation of computing the max path sum and its intermediate results can be seen below. However this implementation uses a \texttt{union} (\inlinehaskell{<>}) to combine the \inlinehaskell{Map}'s which has a complexity of $\mathcal{O}(m*log(n/m + 1)), m <= n$\cite{HaskellDataUnion}. This can be implemented more efficiently by giving the \inlinehaskell{Map} to the left side and then to the right side of the Tree, which makes it a constant operation. Except, this would make the code more complex. 
 
 \begin{haskell}
 maxPathSumInc :: MerkleTree -> (Int, Map Hash Int)    
@@ -113,15 +112,15 @@ maxPathSumInc (NodeH h l x r) = (y, insert h y (ml <> mr))
     \caption{The \inlinehaskell{MerkleTree} with intermediate results}    
 \end{figure}
 
-When there is a change in the \inlinehaskell{BinTree}, only the hashes of the change itself and its parents need to be recomputed. The recomputation of the hash has a time complexity of $\mathcal{O}(M \log{N})$ where $M$ is the number of changed nodes.
+When there is a change in the \inlinehaskell{BinTree}, only the hashes of the change itself and its parents need to be recomputed. The recomputation of the hash has a time complexity with an upper bound of $\mathcal{O}(N)$ and an average of $\Theta(M \log{N})$ where $M$ is the number of changed nodes. The upper bound is $\mathcal{O}(N)$, because if $N = M \Rightarrow \mathcal{O}(N \log{N}) > \mathcal{O}(N)$, but when every node in the tree is changed, then use the original function with complexity $\mathcal{O}(N)$. Meaning that this implementation only works efficiently with small changes to the data type.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.33\textwidth]{ChangedMerkleTree.pdf}
+    \includegraphics[width=.4\textwidth]{ChangedMerkleTree.pdf}
     \caption{Changed Merkle Tree}
 \end{figure}
 
-Then to compute the max path sum over the Changed Tree, the previously computed \texttt{Map} can be used to reduce the amount of recomputation.  
+Then to compute the max path sum over the Changed Tree, the previously computed \inlinehaskell{Map} can be used to reduce the amount of recomputation. This function also has the same complexity as the change Merkle tree, with an upper bound of $\mathcal{O}(N)$ and an average of $\Theta(M \log{N})$. 
 
 \begin{haskell}
 maxPathSumMap :: Map Hash Int -> MerkleTree -> (Int, Map Hash Int)
@@ -137,7 +136,7 @@ maxPathSumMap m (NodeH h l x r) = case lookup m h of
       (xr, mr) = maxPathSumMap m r  
 \end{haskell}
 
-In this paper, an implementation of storing the intermediate results is presented, supporting generic data types. That means the developer only needs to implement the max path sum functionality and the intermediate results are automatically stored.
+In Table \ref{table:function-compl-inc} and \ref{table:function-compl} the function complexities can be seen of the functions used to compute incrementally and complete. As can be seen, the upper bound complexities of the functions for incremental computation are the same as for the complete computation. However, when there are small changes to the data type the incremental update of the result has lower complexity ($\Theta(M \log{N})$) than the complete recomputation complexity ($\Theta(N)$), which makes it more efficient.
 
 \begin{table}[H]
     \centering
@@ -154,6 +153,8 @@ In this paper, an implementation of storing the intermediate results is presente
         \inlinehaskell{maxPathSumMap} & $\Theta(M \log{N})$  & $\mathcal{O}(N)$ \\
         \hline
     \end{tabular}
+    \caption{Functions used for incremental computation}
+    \label{table:function-compl-inc}
 \end{table}
 
 \begin{table}[H]
@@ -165,7 +166,13 @@ In this paper, an implementation of storing the intermediate results is presente
         \inlinehaskell{maxPathSum} & $\mathcal{O}(N)$ & $\mathcal{O}(N)$ \\
         \hline
     \end{tabular}
+    \caption{Functions used for complete computation}
+    \label{table:function-compl}
 \end{table}
+
+
+% In this paper, an implementation of storing the intermediate results is presented, supporting generic data types. That means the developer only needs to implement the max path sum functionality and the intermediate results are automatically stored.
+\todo[inline]{Add a summary of what the Thesis is going to entail}
 
 \newpage
 \subsection{Contributions}
