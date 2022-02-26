@@ -170,21 +170,25 @@ In Table \ref{table:function-compl-inc} and \ref{table:function-compl} the funct
     \label{table:function-compl}
 \end{table}
 
+The problem with this implementation is that it only works for the \inlinehaskell{BinTree} datatype. The goal would be to create a generic function, where only the \inlinehaskell{maxPathSum} would be defined and the result would automatically contain the intermediate results. A generic definition could look like this:
 
-% In this paper, an implementation of storing the intermediate results is presented, supporting generic data types. That means the developer only needs to implement the max path sum functionality and the intermediate results are automatically stored.
-\todo[inline]{Add a summary of what the Thesis is going to entail}
+\begin{haskell}
+cataMerkle :: (f a -> a) -> Map Hash a -> Fix (f :*: K Hash) -> (a, Map Hash a)
+\end{haskell}
 
-\newpage
+Using the \inlinehaskell{cataMerkle} function would lead to only needing to implement the \inlinehaskell{maxPathSum} function and the intermediate results are then automatically stored.
+
 \subsection{Contributions}
-\begin{enumerate}[label={(\Alph*)}]
-    \item A library needs to be implemented which contains the generic \texttt{merkle}, \texttt{cataMerkle} and \texttt{cataMerkleWithMap} functions
-\end{enumerate}
+\begin{itemize}
+    \item A library needs to be implemented which contains the generic \texttt{merkle}, \texttt{cataMerkle} and \texttt{cataMerkleMap} functions and functionality to incrementally update the generic data type.
+\end{itemize}
 
 \subsection{Research Questions}
-Using the previously mentioned library, there is a multitude of questions to be answered:
-\begin{enumerate}[label={(\Alph*)}]
-    \item What parameters can be tweaked to have the best ratio of performance and memory usage?
+Implementing this library raises a few questions that are going to be answered in the \newline Thesis:
+\begin{itemize}
+    \item What parameters can be tweaked for the best ratio between performance and memory usage?
     \item What type of equivalence is needed to reuse the incremental computation?
     \item What type of data structures are the best for storing the incremental computation?
+    \item What implementation is the best to use for incrementally updating generic data types?
     \item Could the library be used to perform static analysis in a more performant manner?
-\end{enumerate}
+\end{itemize}
