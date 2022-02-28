@@ -4,7 +4,7 @@ When computing a result over a data type, a small change would lead to completel
 
 An example of computing a result over a data type is computing the \textbf{maximum path sum} over a binary tree. Given a \inlinehaskell{BinTree}, starting at the root node, find a path from the root node to the leaves that leads to the maximum total.
 
-The implementation of the computation is done in \texttt{Haskell}. And the definition of the binary tree and example is:
+The implementation of the computation is done in \texttt{Haskell}. And the definition of the binary tree and example tree is:
 \begin{haskell}
 data BinTree = Leaf Int
              | Node BinTree Int BinTree 
@@ -21,7 +21,7 @@ exampleTree = Node (Node (Leaf 8) 7 (Leaf 9)) 3 (Node (Leaf 5) 4 (Leaf 2))
     \caption{Graphic visualization of the \inlinehaskell{exampleTree}}
 \end{figure}
 
-An implementation of computing the max path sum over data type \inlinehaskell{BinTree} is and has a complexity of $\mathcal{O}(N)$, where $N$ is the number of nodes in the tree.
+An implementation of computing the max path sum over data type \inlinehaskell{BinTree} can been seen below and has a complexity of $\mathcal{O}(N)$, where $N$ is the number of nodes in the tree.
 \begin{haskell}
 maxPathSum :: BinTree -> Int
 maxPathSum (Leaf x)     = x
@@ -43,7 +43,7 @@ maxPathSum exampleTree !$\equiv$! 19
 \end{minipage}
 \end{figure}
 
-To reduce the number of recomputations, first, we need to compare the structure of the data type for equality. When comparing the data type structure for equality, if they are equal, the previously computed result can be reused. Otherwise, the result needs to be recomputed. To compare the structure of the data type in constant time, we introduce the use of hash functions. Generating a hash every time a comparison takes place would be inefficient because part of the structure does not change, which leads to the same hash. Thus, every substructure in the data type stores the hash of its substructure. 
+To reduce the number of recomputations, first, we need to compare the structure of the data type for equality. When comparing the data type structure for equality, if they are equal, the previously computed result can be reused. Otherwise, the result needs to be recomputed. To compare the structure of the data type efficiently, we introduce the use of hash functions. Generating a hash every time a comparison takes place would be inefficient because part of the structure does not change, which leads to the same hash. Thus, every substructure in the data type stores the hash of its structure. Using hash functions and storing them to compare the structures of the data type for equality is performed in constant time ($\mathcal{O}(1)$).
 
 In the example, a new data type is introduced: the \inlinehaskell{MerkleTree}. This data type is the same as the \inlinehaskell{BinTree}, but the constructors also contain a \inlinehaskell{Hash}. To create a \inlinehaskell{MerkleTree}, we traverse through a \inlinehaskell{BinTree} and hash the structure and store it. Creating a \inlinehaskell{MerkleTree} has a time complexity of $\mathcal{O}(N)$.
 
@@ -69,7 +69,7 @@ merkle (Node l x r) = NodeH (hash ["Node", x, hl, hr]) l' x r'
 
 To compute the max path sum and its intermediate results, we can use the precomputed hashes of the \inlinehaskell{MerkleTree} to efficiently generate a \inlinehaskell{Map Hash Int}. The complexity of computing the max path sum and the intermediate results is $\mathcal{O}(N)$.   
 
-The example implementation of computing the max path sum and its intermediate results can be seen below. However this implementation uses a \texttt{union} (\inlinehaskell{<>}) to combine the \inlinehaskell{Map}'s which has a complexity of $\mathcal{O}(m*log(n/m + 1)), m <= n$\cite{HaskellDataUnion}. This can be implemented more efficiently by giving the \inlinehaskell{Map} to the left side and then to the right side of the Tree, which makes it a constant operation. Except, this would make the code more complex. 
+The example implementation of computing the max path sum and its intermediate results can be seen below. However this implementation uses a \texttt{union} (\inlinehaskell{<>}) to combine the \inlinehaskell{Map}'s which has a complexity of $\mathcal{O}(m*log(n/m + 1)), m <= n$\cite{HaskellDataUnion}. This can be implemented more efficiently by giving the \inlinehaskell{Map} to the left side and then to the right side of the Tree, which makes it a constant operation. Except, this would make the code more complex. So, for clarity, the example is implemented with a union.
 
 \begin{haskell}
 maxPathSumInc :: MerkleTree -> (Int, Map Hash Int)    
@@ -112,7 +112,7 @@ maxPathSumInc (NodeH h l x r) = (y, insert h y (ml <> mr))
     \caption{The \inlinehaskell{MerkleTree} with intermediate results}    
 \end{figure}
 
-When there is a change in the \inlinehaskell{BinTree}, only the hashes of the change itself and its parents need to be recomputed. The recomputation of the hash has a time complexity with an upper bound of $\mathcal{O}(N)$ and an average of $\Theta(M \log{N})$ where $M$ is the number of changed nodes. The upper bound is $\mathcal{O}(N)$, because if $N = M \Rightarrow \mathcal{O}(N \log{N}) > \mathcal{O}(N)$, but when every node in the tree is changed, then use the original function with complexity $\mathcal{O}(N)$. Meaning that this implementation only works efficiently with small changes to the data type.
+When there is a change in the \inlinehaskell{BinTree}, only the hashes of the change itself and its parents need to be recomputed. The recomputation of the hash has a time complexity with an upper bound of $\mathcal{O}(N)$ and an average of $\Theta(M \log{N})$ where $M$ is the number of changed nodes. The upper bound is $\mathcal{O}(N)$, because if $N = M \Rightarrow \mathcal{O}(N \log{N}) > \mathcal{O}(N)$, but when every node in the tree is changed, then the original function can be used. Meaning that this implementation only works efficiently with small changes to the data type.
 
 \begin{figure}[H]
     \centering
